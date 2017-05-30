@@ -399,15 +399,18 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
 
       // Control buttons
       this.title_controls = this.theme.getHeaderButtonHolder();
+      this.title_controls.style.marginTop = '-5px';
       this.editjson_controls = this.theme.getHeaderButtonHolder();
       this.addproperty_controls = this.theme.getHeaderButtonHolder();
-      this.title.appendChild(this.title_controls);
+      this.title.insertBefore(this.title_controls, this.title.childNodes[0]);
       this.title.appendChild(this.editjson_controls);
       this.title.appendChild(this.addproperty_controls);
 
       // Show/Hide button
       this.collapsed = false;
-      this.toggle_button = this.getButton('','collapse',this.translate('button_collapse'));
+      this.toggle_button = document.createElement('i');
+      this.toggle_button.className = 'glyphicon glyphicon-triangle-bottom';
+      this.toggle_button.style.fontSize = '14px';
       this.title_controls.appendChild(this.toggle_button);
       this.toggle_button.addEventListener('click',function(e) {
         e.preventDefault();
@@ -415,12 +418,12 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
         if(self.collapsed) {
           self.editor_holder.style.display = '';
           self.collapsed = false;
-          self.setButtonText(self.toggle_button,'','collapse',self.translate('button_collapse'));
+          this.className = 'glyphicon glyphicon-triangle-bottom';
         }
         else {
           self.editor_holder.style.display = 'none';
           self.collapsed = true;
-          self.setButtonText(self.toggle_button,'','expand',self.translate('button_expand'));
+          this.className = 'glyphicon glyphicon-triangle-right';
         }
       });
 
@@ -712,7 +715,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
       if(!this.editors.hasOwnProperty(i)) continue;
       this.value[i] = this.editors[i].getValue();
     }
-    
+
     if(this.adding_property) this.refreshAddProperties();
   },
   refreshAddProperties: function() {

@@ -45,20 +45,32 @@ JSONEditor.defaults.editors.table = JSONEditor.defaults.editors.array.extend({
 
     if(!this.options.compact) {
       this.title = this.theme.getHeader(this.getTitle());
+      if(this.jsoneditor.options.selectable_fields){
+        var label = document.createElement('label');
+        var chk = document.createElement('input');
+        chk.type = 'checkbox';
+        chk.className = 'actual-field';
+        label.appendChild(chk);
+        this.title.insertBefore(label, this.title.childNodes[0]);
+      }
+      this.header = this.title;
       this.container.appendChild(this.title);
       this.title_controls = this.theme.getHeaderButtonHolder();
-      this.title.appendChild(this.title_controls);
+      this.title_controls.style.marginTop = '-5px';
+      this.title.insertBefore(this.title_controls, this.title.childNodes[0]);
       if(this.schema.description) {
         this.description = this.theme.getDescription(this.schema.description);
         this.container.appendChild(this.description);
       }
       this.panel = this.theme.getIndentedPanel();
+      this.panel.style.overflow = 'auto';
       this.container.appendChild(this.panel);
       this.error_holder = document.createElement('div');
       this.panel.appendChild(this.error_holder);
     }
     else {
       this.panel = document.createElement('div');
+      this.panel.style.overflow = 'auto';
       this.container.appendChild(this.panel);
     }
 
@@ -392,7 +404,9 @@ JSONEditor.defaults.editors.table = JSONEditor.defaults.editors.array.extend({
     var self = this;
 
     this.collapsed = false;
-    this.toggle_button = this.getButton('','collapse',this.translate('button_collapse'));
+    this.toggle_button = document.createElement('i');
+    this.toggle_button.className = 'glyphicon glyphicon-triangle-bottom';
+    this.toggle_button.style.fontSize = '14px';
     if(this.title_controls) {
       this.title_controls.appendChild(this.toggle_button);
       this.toggle_button.addEventListener('click',function(e) {
@@ -402,12 +416,12 @@ JSONEditor.defaults.editors.table = JSONEditor.defaults.editors.array.extend({
         if(self.collapsed) {
           self.collapsed = false;
           self.panel.style.display = '';
-          self.setButtonText(this,'','collapse',self.translate('button_collapse'));
+          this.className = 'glyphicon glyphicon-triangle-bottom';
         }
         else {
           self.collapsed = true;
           self.panel.style.display = 'none';
-          self.setButtonText(this,'','expand',self.translate('button_expand'));
+          this.className = 'glyphicon glyphicon-triangle-right';
         }
       });
 

@@ -3,7 +3,8 @@ JSONEditor.defaults.editors.arraySelectize = JSONEditor.AbstractEditor.extend({
     this.title = this.theme.getFormInputLabel(this.getTitle());
 
     this.title_controls = this.theme.getHeaderButtonHolder();
-    this.title.appendChild(this.title_controls);
+    this.title_controls.style.marginTop = '-5px';
+    this.title.insertBefore(this.title_controls, this.title.childNodes[0]);
     this.error_holder = document.createElement('div');
 
     if(this.schema.description) {

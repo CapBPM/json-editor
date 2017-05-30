@@ -237,6 +237,10 @@ JSONEditor.AbstractTheme = Class.extend({
   },
   getTableHeaderCell: function(text) {
     var el = document.createElement('th');
+    el.style = el.style || {};
+    if(text != ' '){
+        el.style.minWidth = '200px';
+    }
     el.textContent = text;
     return el;
   },

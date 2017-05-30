@@ -44,7 +44,7 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
       group.appendChild(label);
       input.style.position = 'relative';
       input.style.cssFloat = 'left';
-    } 
+    }
     else {
       group.className += ' form-group';
       if(label) {
@@ -70,9 +70,21 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
     el.innerHTML = text;
     return el;
   },
+  getHeader: function(text) {
+    var el = document.createElement('h3');
+    el.style.whiteSpace = 'nowrap';
+    if(typeof text === "string") {
+      el.textContent = text;
+    }
+    else {
+      el.appendChild(text);
+    }
+
+    return el;
+  },
   getHeaderButtonHolder: function() {
     var el = this.getButtonHolder();
-    el.style.marginLeft = '10px';
+    el.style.marginRight = '10px';
     return el;
   },
   getButtonHolder: function() {
@@ -165,5 +177,16 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
     bar.removeAttribute('aria-valuenow');
     bar.style.width = '100%';
     bar.innerHTML = '';
+  },
+  getFormInputLabel: function(text) {
+    var el = document.createElement('label');
+    el.appendChild(document.createTextNode(text));
+    var btn = '<button class="btn btn-xs btn-add-notes pull-right" name="{text}" style="margin-left: 5px"> <i name="{text}" class="fa fa-sticky-note fa-lg"></i> </button>';
+    btn = btn.replace('{text}',text);
+    btn = btn.replace('{text}',text);
+    el.innerHTML += btn;
+    el.className +=' clearfix';
+    el.style.width = '100%';
+    return el;
   }
 });
