@@ -23,7 +23,7 @@ JSONEditor.defaults.editors.multiselect = JSONEditor.AbstractEditor.extend({
   },
   build: function() {
     var self = this, i;
-    if(!this.options.compact) this.header = this.label = this.theme.getFormInputLabel(this.getTitle());
+    if(!this.options.compact) this.header = this.label = this.theme.getFormInputLabel(this, this.getTitle());
     if(this.schema.description) this.description = this.theme.getFormInputDescription(this.schema.description);
 
     if((!this.schema.format && this.option_keys.length < 8) || this.schema.format === "checkbox") {
@@ -34,7 +34,7 @@ JSONEditor.defaults.editors.multiselect = JSONEditor.AbstractEditor.extend({
       for(i=0; i<this.option_keys.length; i++) {
         this.inputs[this.option_keys[i]] = this.theme.getCheckbox();
         this.select_options[this.option_keys[i]] = this.inputs[this.option_keys[i]];
-        var label = this.theme.getCheckboxLabel(this.option_titles[i]);
+        var label = this.theme.getCheckboxLabel(this, this.option_titles[i]);
         this.controls[this.option_keys[i]] = this.theme.getFormControl(label, this.inputs[this.option_keys[i]]);
       }
 

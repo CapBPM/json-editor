@@ -63,17 +63,17 @@ JSONEditor.AbstractTheme = Class.extend({
   enableLabel: function(label) {
     label.style.color = '';
   },
-  getFormInputLabel: function(text) {
+  getFormInputLabel: function(editor, text) {
     var el = document.createElement('label');
     el.appendChild(document.createTextNode(text));
     return el;
   },
-  getCheckboxLabel: function(text) {
-    var el = this.getFormInputLabel(text);
+  getCheckboxLabel: function(editor, text) {
+    var el = this.getFormInputLabel(editor, text);
     el.style.fontWeight = 'normal';
     return el;
   },
-  getHeader: function(text) {
+  getHeader: function(editor, text) {
     var el = document.createElement('h3');
     if(typeof text === "string") {
       el.textContent = text;

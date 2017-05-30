@@ -33,7 +33,7 @@ JSONEditor.defaults.themes.jqueryui = JSONEditor.AbstractTheme.extend({
     var el = this._super(label,input,description);
     if(input.type === 'checkbox') {
       el.style.lineHeight = '25px';
-      
+
       el.style.padding = '3px 0';
     }
     else {
@@ -54,7 +54,7 @@ JSONEditor.defaults.themes.jqueryui = JSONEditor.AbstractTheme.extend({
     el.style.fontSize = '.7em';
     return el;
   },
-  getFormInputLabel: function(text) {
+  getFormInputLabel: function(editor, text) {
     var el = document.createElement('label');
     el.style.fontWeight = 'bold';
     el.style.display = 'block';
@@ -88,7 +88,7 @@ JSONEditor.defaults.themes.jqueryui = JSONEditor.AbstractTheme.extend({
     button.appendChild(el);
 
     button.setAttribute('title',title);
-    
+
     return button;
   },
   setButtonText: function(button,text, icon, title) {

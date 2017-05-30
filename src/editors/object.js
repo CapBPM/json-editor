@@ -304,7 +304,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     else {
       this.header = document.createElement('span');
       this.header.textContent = this.getTitle();
-      this.title = this.theme.getHeader(this.header);
+      this.title = this.theme.getHeader(this, this.header);
       this.container.appendChild(this.title);
       this.container.style.position = 'relative';
 
@@ -560,7 +560,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     else
       labelText = key;
 
-    label = self.theme.getCheckboxLabel(labelText);
+    label = self.theme.getCheckboxLabel(self, labelText);
 
     control = self.theme.getFormControl(label,checkbox);
     control.style.paddingBottom = control.style.marginBottom = control.style.paddingTop = control.style.marginTop = 0;

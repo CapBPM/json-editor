@@ -114,8 +114,10 @@ JSONEditor.prototype = {
 
             if( val instanceof Array  ||  !(val instanceof Object) ){
       	        name = this.getEditor(path);
-          	name.setValue(obj[field]);
-     	        $(this.element).find("div[data-schemapath='"+path+"'] .actual-field").attr('checked', 'checked');
+                if( !! name ){
+                    name.setValue(obj[field]);
+         	        $(this.element).find("div[data-schemapath='"+path+"'] .actual-field").attr('checked', 'checked');
+                }
     	    }
 
             if( val instanceof Object ){

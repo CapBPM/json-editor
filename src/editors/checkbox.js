@@ -20,7 +20,7 @@ JSONEditor.defaults.editors.checkbox = JSONEditor.AbstractEditor.extend({
   build: function() {
     var self = this;
     if(!this.options.compact) {
-      this.label = this.header = this.theme.getCheckboxLabel(this.getTitle());
+      this.label = this.header = this.theme.getCheckboxLabel(this, this.getTitle());
     }
     if(this.schema.description) this.description = this.theme.getFormInputDescription(this.schema.description);
     if(this.options.compact) this.container.className += ' compact';

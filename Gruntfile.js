@@ -46,9 +46,10 @@ module.exports = function(grunt) {
 
           // All the themes and iconlibs
           'src/theme.js',
-          'src/themes/*.js',
+          'src/themes/bootstrap3.js',
+          'src/themes/bootstrap3_s.js',
           'src/iconlib.js',
-          'src/iconlibs/*.js',
+          'src/iconlibs/bootstrap3.js',
 
           // The JS templating engines
           'src/templates/*.js',
@@ -108,9 +109,10 @@ module.exports = function(grunt) {
 
         // All the themes and iconlibs
         'src/theme.js',
-        'src/themes/*.js',
+        'src/themes/bootstrap3.js',
+        'src/themes/bootstrap3_s.js',
         'src/iconlib.js',
-        'src/iconlibs/*.js',
+        'src/iconlibs/bootstrap3.js',
 
         // The JS templating engines
         'src/templates/*.js',

@@ -49,7 +49,7 @@ JSONEditor.defaults.editors.multiple = JSONEditor.AbstractEditor.extend({
     if(!this.editors[i]) {
       this.buildChildEditor(i);
     }
-    
+
     var current_value = self.getValue();
 
     self.type = i;
@@ -167,7 +167,7 @@ JSONEditor.defaults.editors.multiple = JSONEditor.AbstractEditor.extend({
     var self = this;
     var container = this.container;
 
-    this.header = this.label = this.theme.getFormInputLabel(this.getTitle());
+    this.header = this.label = this.theme.getFormInputLabel(this, this.getTitle());
     this.container.appendChild(this.header);
 
     this.switcher = this.theme.getSwitcher(this.display_text);
@@ -182,8 +182,8 @@ JSONEditor.defaults.editors.multiple = JSONEditor.AbstractEditor.extend({
 
     this.editor_holder = document.createElement('div');
     container.appendChild(this.editor_holder);
-    
-      
+
+
     var validator_options = {};
     if(self.jsoneditor.options.custom_validators) {
       validator_options.custom_validators = self.jsoneditor.options.custom_validators;

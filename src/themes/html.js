@@ -1,5 +1,5 @@
 JSONEditor.defaults.themes.html = JSONEditor.AbstractTheme.extend({
-  getFormInputLabel: function(text) {
+  getFormInputLabel: function(editor, text) {
     var el = this._super(text);
     el.style.display = 'block';
     el.style.marginBottom = '3px';
@@ -43,7 +43,7 @@ JSONEditor.defaults.themes.html = JSONEditor.AbstractTheme.extend({
   },
   addInputError: function(input, text) {
     input.style.borderColor = 'red';
-    
+
     if(!input.errmsg) {
       var group = this.closest(input,'.form-control');
       input.errmsg = document.createElement('div');
@@ -55,7 +55,7 @@ JSONEditor.defaults.themes.html = JSONEditor.AbstractTheme.extend({
     else {
       input.errmsg.style.display = 'block';
     }
-    
+
     input.errmsg.innerHTML = '';
     input.errmsg.appendChild(document.createTextNode(text));
   },

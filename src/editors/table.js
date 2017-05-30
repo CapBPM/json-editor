@@ -44,15 +44,7 @@ JSONEditor.defaults.editors.table = JSONEditor.defaults.editors.array.extend({
     this.width = tmp.getNumColumns() + 2;
 
     if(!this.options.compact) {
-      this.title = this.theme.getHeader(this.getTitle());
-      if(this.jsoneditor.options.selectable_fields){
-        var label = document.createElement('label');
-        var chk = document.createElement('input');
-        chk.type = 'checkbox';
-        chk.className = 'actual-field';
-        label.appendChild(chk);
-        this.title.insertBefore(label, this.title.childNodes[0]);
-      }
+      this.title = this.theme.getHeader(this, this.getTitle());
       this.header = this.title;
       this.container.appendChild(this.title);
       this.title_controls = this.theme.getHeaderButtonHolder();

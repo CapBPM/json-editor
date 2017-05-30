@@ -23,7 +23,7 @@ JSONEditor.defaults.themes.foundation = JSONEditor.AbstractTheme.extend({
     }
     input.group = this.closest(input,'.form-control');
   },
-  getFormInputLabel: function(text) {
+  getFormInputLabel: function(editor, text) {
     var el = this._super(text);
     el.style.display = 'inline-block';
     return el;
@@ -110,7 +110,7 @@ JSONEditor.defaults.themes.foundation3 = JSONEditor.defaults.themes.foundation.e
     el.style.fontSize = '.6em';
     return el;
   },
-  getFormInputLabel: function(text) {
+  getFormInputLabel: function(editor, text) {
     var el = this._super(text);
     el.style.fontWeight = 'bold';
     return el;
@@ -168,7 +168,7 @@ JSONEditor.defaults.themes.foundation4 = JSONEditor.defaults.themes.foundation.e
     el.style.fontSize = '.8rem';
     return el;
   },
-  getFormInputLabel: function(text) {
+  getFormInputLabel: function(editor, text) {
     var el = this._super(text);
     el.style.fontWeight = 'bold';
     return el;
@@ -235,7 +235,7 @@ JSONEditor.defaults.themes.foundation6 = JSONEditor.defaults.themes.foundation5.
     el.style.marginBottom = 0;
     return el;
   },
-  getFormInputLabel: function(text) {
+  getFormInputLabel: function(editor, text) {
     var el = this._super(text);
     el.style.display = 'block';
     return el;

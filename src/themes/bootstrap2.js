@@ -13,7 +13,7 @@ JSONEditor.defaults.themes.bootstrap2 = JSONEditor.AbstractTheme.extend({
     el.className = 'row-fluid';
     return el;
   },
-  getFormInputLabel: function(text) {
+  getFormInputLabel: function(editor, text) {
     var el = this._super(text);
     el.style.display = 'inline-block';
     el.style.fontWeight = 'bold';

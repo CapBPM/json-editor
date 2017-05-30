@@ -1,6 +1,6 @@
 JSONEditor.defaults.editors.arraySelectize = JSONEditor.AbstractEditor.extend({
   build: function() {
-    this.title = this.theme.getFormInputLabel(this.getTitle());
+    this.title = this.theme.getFormInputLabel(this, this.getTitle());
 
     this.title_controls = this.theme.getHeaderButtonHolder();
     this.title_controls.style.marginTop = '-5px';

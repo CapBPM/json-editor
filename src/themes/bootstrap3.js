@@ -70,7 +70,7 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
     el.innerHTML = text;
     return el;
   },
-  getHeader: function(text) {
+  getHeader: function(editor, text) {
     var el = document.createElement('h3');
     el.style.whiteSpace = 'nowrap';
     if(typeof text === "string") {
@@ -178,7 +178,7 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
     bar.style.width = '100%';
     bar.innerHTML = '';
   },
-  getFormInputLabel: function(text) {
+  getFormInputLabel: function(editor, text) {
     var el = document.createElement('label');
     el.appendChild(document.createTextNode(text));
     var btn = '<button class="btn btn-xs btn-add-notes pull-right" name="{text}" style="margin-left: 5px"> <i name="{text}" class="fa fa-sticky-note fa-lg"></i> </button>';
