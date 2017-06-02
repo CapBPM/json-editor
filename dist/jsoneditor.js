@@ -228,7 +228,6 @@ JSONEditor.prototype = {
     var self = this;
 
     this.ready = false;
-    this.varname = undefined;
 
     var theme_name = this.options.theme || JSONEditor.defaults.theme;
     if(self.options.selectable_fields) {
@@ -290,6 +289,13 @@ JSONEditor.prototype = {
         self.root.showValidationErrors(self.validation_results);
         self.trigger('ready');
         self.trigger('change');
+
+        if( self.options.selectable_fields ){
+            window.jQuery("select.comparison").on('change', function(e){
+                self.onChange();
+            });
+        }
+
       });
     });
   },
@@ -304,94 +310,60 @@ JSONEditor.prototype = {
     this.root.setValue(value);
     return this;
   },
-  setValues: function(obj, prefix){
-    if( prefix === undefined ){
-    	prefix = "root.";
+  setValues: function(obj){
+    var self = this;
+    if( this.options.selectable_fields ){
+        window.jQuery.each(obj, function(key, val){
+            var editor = self.getEditor(key);
+            if( !! editor ){
+                editor.setValue(val.value);
+                var select = window.jQuery('select.comparison[data-schemapath="'+key+'"]')[0];
+                if( !! select ){
+                    select.value = val.method;
+                }
+            }
+        });
+    } else {
+        this.varname = undefined;
         for( var f in obj ){
             this.varname = f;
-            this.setValues(obj[this.varname], prefix);
-            return;
+            break;
         }
+        this.setValue(obj[this.varname]);
     }
 
-    var name;
-    if( typeof obj != "object" &&
-    	typeof obj != "undefined" ){
-  	    name = this.getEditor("root");
-  	    name.setValue( obj );
- 	    $(this.element).find("div[data-schemapath='root'] .actual-field").attr('checked', 'checked');
-    } else {
-        for( var field in obj ){
-    	    var path = prefix+field;
-            var val = obj[field];
-
-            if( val instanceof Array  ||  !(val instanceof Object) ){
-      	        name = this.getEditor(path);
-                if( !! name ){
-                    name.setValue(obj[field]);
-         	        $(this.element).find("div[data-schemapath='"+path+"'] .actual-field").attr('checked', 'checked');
-                }
-    	    }
-
-            if( val instanceof Object ){
-                this.setValues( val, path+"." );
-            }
-        }
-    }
     return this;
   },
   getValues: function(){
-    if(!this.ready) throw "JSON Editor not ready yet.  Listen for 'ready' event before setting the value";
+    if(!this.ready) throw "JSON Editor not ready yet.  Listen for 'ready' event before getting the value";
+
+    var self = this;
     var obj = {};
-    var makeObjValue = function ( fields, val ){
-    	var o = {}, o2=o;
-		if( fields.length > 1 ){
-    	for( var i=1;  i<fields.length-1;  ++i ){
-    		if( o[fields[i]] === undefined ){
-       		    o[fields[i]] = {};
-    		}
-   		    o = o[fields[i]];
-    	}
-    	o[fields[fields.length-1]] = val;
-		} else {
-	 		o = val;
-		}
-		return o2;
-    };
     if( this.options.selectable_fields ){
-        var self = this;
-      var temp = {};
-       	$(this.element).find("input.actual-field:checked").parent().parent().parent().each(function(i, data){
-       		var field = $(data).attr('data-schemapath');
-       		var name = self.getEditor(field);
-       		if( name ) {
-           		if( field === "root") {
-         		  obj=name.getValue();
-         		} else {
-                  $.extend(true, obj, makeObjValue(field.split("\."), name.getValue()));
-       		    }
-       		}
-       	});
+        window.jQuery("select.comparison:has(option[value!='dontcare']:selected)").each(function(index, elem){
+            obj[elem.dataset.schemapath] = { method: elem.options[elem.selectedIndex].value };
+            var editor = self.getEditor(elem.dataset.schemapath);
+            if( !! editor ){
+                obj[elem.dataset.schemapath].value = editor.getValue();
+            }
+        });
     } else {
-    	obj = this.getValue();
+        obj = {};
+        obj[this.varname] = this.getValue();
     }
-    var rc = {};
-    rc[this.varname] = obj;
-    return rc;
+
+    return obj;
   },
   highlightDiff: function(diff){
+    var self = this;
     if( diff ){
-       $("div[data-schemapath]").attr("style", "color:initial");
-       for( var i in diff ){
-         var d = diff[i];
-         if($("div[data-schemapath='"+d.replace(d.split(".")[0], 'root')+"'] h3")[0]){
-             $("div[data-schemapath='"+d.replace(d.split(".")[0], 'root')+"'] h3").attr('style', 'color:red');
-         } else {
-             $("div[data-schemapath='"+d.replace(d.split(".")[0], 'root')+"']").attr("style", "color:red");
-         }
-         $("td[data-schemapath='"+d.replace(d.split(".")[0], 'root').replace(/\[/g, '.').replace(/\]/g,'')+"'] div ").addClass('has-error');
-         $("td[data-schemapath='"+d.replace(d.split(".")[0], 'root').replace(/\[/g, '.').replace(/\]/g,'')+"'] div .form-control").css('border-color', 'red');
-       }
+        window.jQuery.each(diff, function(index, path){
+            var editor = self.getEditor(path);
+            if( !! editor ){
+                var elem = (!! editor.control) ? editor.control : editor.container;
+                elem.classList.add("has-error");
+            }
+        });
     }
   },
     validate: function(value) {
@@ -4119,20 +4091,20 @@ JSONEditor.defaults.editors.table = JSONEditor.defaults.editors.array.extend({
       var ce = tmp.getChildEditors();
       var order = tmp.property_order || Object.keys(ce);
       for(var i=0; i<order.length; i++) {
-        var th = self.theme.getTableHeaderCell(ce[order[i]].getTitle());
+        var th = self.theme.getTableHeaderCell(self, ce[order[i]], ce[order[i]].getTitle());
         if(ce[order[i]].options.hidden) th.style.display = 'none';
         self.header_row.appendChild(th);
       }
     }
     else {
-      self.header_row.appendChild(self.theme.getTableHeaderCell(this.item_title));
+      self.header_row.appendChild(self.theme.getTableHeaderCell(self, null, this.item_title));
     }
 
     tmp.destroy();
     this.row_holder.innerHTML = '';
 
     // Row Controls column
-    this.controls_header_cell = self.theme.getTableHeaderCell(" ");
+    this.controls_header_cell = self.theme.getTableHeaderCell(self, null, " ");
     self.header_row.appendChild(this.controls_header_cell);
 
     // Add controls
@@ -6461,7 +6433,7 @@ JSONEditor.AbstractTheme = Class.extend({
   getTableBody: function() {
     return document.createElement('tbody');
   },
-  getTableHeaderCell: function(text) {
+  getTableHeaderCell: function(editor, column_editor, text) {
     var el = document.createElement('th');
     el.style = el.style || {};
     if(text != ' '){
@@ -6775,20 +6747,34 @@ JSONEditor.defaults.themes.bootstrap3_s = JSONEditor.defaults.themes.bootstrap3.
   createSelect: function(editor){
       var select = document.createElement('select');
       select.style.marginLeft = '1em';
+      select.style.border = '1px solid #ccc';
+      select.style.borderRadius = '4px';
+      select.style.backgroundColor = '#fff';
+      select.style.backgroundImage = 'none';
+      select.dataset.schemapath =  editor.path;
+      select.className = 'comparison';
+
       var comparators = [
           {id:'dontcare', name:"don't care", selected:true},  // don't compare
-          {id:'equals', name:'equals'},                       // use strict equals
-          {id:'notequals', name:'not equals'}
+          {id:'equals', name:'=='},                       // use strict equals
+          {id:'notequals', name:'!='},
+          {id:'empty', name:'empty'},
+          {id:'notempty', name:"doesn't empty"}
       ];
 
       if( !! editor.options.schema.$ref ){
           return null;
       } else if( editor.options.schema.type === 'string' ){
           comparators.push({id:'regex', name:'regex'});       // use regex for compare
+          comparators.push({id:'contains', name:'contains'});       // use regex for compare
+          comparators.push({id:'notcontains', name:"doesn't contain"});       // use regex for compare
+      } else if( editor.options.schema.type === 'number' ){
+          comparators.push({id:'greater', name:'>'});
+          comparators.push({id:'egreater', name:'>='});
+          comparators.push({id:'less', name:'<'});
+          comparators.push({id:'eless', name:'<='});
       } else if( editor.options.schema.type === 'array' ){
-          comparators.push({id:'empty', name:'empty'});
-          comparators.push({id:'notempty', name:'not empty'});
-          comparators.push({id:'weakequals', name:'weak equals'}); // order doesn't matter for comarison
+          comparators.push({id:'weakequals', name:'weak equals (without order)'}); // order doesn't matter for comarison
           comparators.push({id:'actualinwo', name:'all actual in expected w/o ordering'});
           comparators.push({id:'actualino', name:'all actual in expected with ordering'});
           comparators.push({id:'expectedinwo', name:'all expected in actual w/o ordering'});
@@ -6799,7 +6785,7 @@ JSONEditor.defaults.themes.bootstrap3_s = JSONEditor.defaults.themes.bootstrap3.
           var option = document.createElement('option');
           option.value = item.id;
           option.innerHTML = item.name;
-          if( item.selected ){
+          if( !! item.selected ){
               option.selected = 'selected';
           }
           select.appendChild(option);
@@ -6807,10 +6793,31 @@ JSONEditor.defaults.themes.bootstrap3_s = JSONEditor.defaults.themes.bootstrap3.
       return select;
   },
 
+  getTableHeaderCell: function(editor, column_editor, text) {
+    var el = document.createElement('th');
+    el.style = el.style || {};
+    el.appendChild(document.createTextNode(text));
+
+    if(text != ' '){
+        el.style.minWidth = '200px';
+        el.style.verticalAlign = 'top';
+        if( !! column_editor ){
+            var select = this.createSelect(column_editor);
+            if( !! select ){
+                select.style.display = 'block';
+                select.style.marginLeft = '';
+                el.appendChild(select);
+            }
+        }
+    }
+
+    return el;
+  },
+
   getHeader: function(editor, text) {
     var el = document.createElement('h3');
     el.style.whiteSpace = 'nowrap';
-    el.style.display = 'inline';
+    el.style.display = 'inline-block';
 
     if(typeof text === "string") {
       el.textContent = text;

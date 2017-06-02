@@ -5,7 +5,7 @@ JSONEditor.defaults.themes.jqueryui = JSONEditor.AbstractTheme.extend({
     el.setAttribute('cellspacing',0);
     return el;
   },
-  getTableHeaderCell: function(text) {
+  getTableHeaderCell: function(editor, column_editor, text) {
     var el = this._super(text);
     el.className = 'ui-state-active';
     el.style.fontWeight = 'bold';

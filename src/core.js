@@ -15,7 +15,6 @@ JSONEditor.prototype = {
     var self = this;
 
     this.ready = false;
-    this.varname = undefined;
 
     var theme_name = this.options.theme || JSONEditor.defaults.theme;
     if(self.options.selectable_fields) {
@@ -77,6 +76,13 @@ JSONEditor.prototype = {
         self.root.showValidationErrors(self.validation_results);
         self.trigger('ready');
         self.trigger('change');
+
+        if( self.options.selectable_fields ){
+            window.jQuery("select.comparison").on('change', function(e){
+                self.onChange();
+            });
+        }
+
       });
     });
   },
@@ -91,94 +97,60 @@ JSONEditor.prototype = {
     this.root.setValue(value);
     return this;
   },
-  setValues: function(obj, prefix){
-    if( prefix === undefined ){
-    	prefix = "root.";
+  setValues: function(obj){
+    var self = this;
+    if( this.options.selectable_fields ){
+        window.jQuery.each(obj, function(key, val){
+            var editor = self.getEditor(key);
+            if( !! editor ){
+                editor.setValue(val.value);
+                var select = window.jQuery('select.comparison[data-schemapath="'+key+'"]')[0];
+                if( !! select ){
+                    select.value = val.method;
+                }
+            }
+        });
+    } else {
+        this.varname = undefined;
         for( var f in obj ){
             this.varname = f;
-            this.setValues(obj[this.varname], prefix);
-            return;
+            break;
         }
+        this.setValue(obj[this.varname]);
     }
 
-    var name;
-    if( typeof obj != "object" &&
-    	typeof obj != "undefined" ){
-  	    name = this.getEditor("root");
-  	    name.setValue( obj );
- 	    $(this.element).find("div[data-schemapath='root'] .actual-field").attr('checked', 'checked');
-    } else {
-        for( var field in obj ){
-    	    var path = prefix+field;
-            var val = obj[field];
-
-            if( val instanceof Array  ||  !(val instanceof Object) ){
-      	        name = this.getEditor(path);
-                if( !! name ){
-                    name.setValue(obj[field]);
-         	        $(this.element).find("div[data-schemapath='"+path+"'] .actual-field").attr('checked', 'checked');
-                }
-    	    }
-
-            if( val instanceof Object ){
-                this.setValues( val, path+"." );
-            }
-        }
-    }
     return this;
   },
   getValues: function(){
-    if(!this.ready) throw "JSON Editor not ready yet.  Listen for 'ready' event before setting the value";
+    if(!this.ready) throw "JSON Editor not ready yet.  Listen for 'ready' event before getting the value";
+
+    var self = this;
     var obj = {};
-    var makeObjValue = function ( fields, val ){
-    	var o = {}, o2=o;
-		if( fields.length > 1 ){
-    	for( var i=1;  i<fields.length-1;  ++i ){
-    		if( o[fields[i]] === undefined ){
-       		    o[fields[i]] = {};
-    		}
-   		    o = o[fields[i]];
-    	}
-    	o[fields[fields.length-1]] = val;
-		} else {
-	 		o = val;
-		}
-		return o2;
-    };
     if( this.options.selectable_fields ){
-        var self = this;
-      var temp = {};
-       	$(this.element).find("input.actual-field:checked").parent().parent().parent().each(function(i, data){
-       		var field = $(data).attr('data-schemapath');
-       		var name = self.getEditor(field);
-       		if( name ) {
-           		if( field === "root") {
-         		  obj=name.getValue();
-         		} else {
-                  $.extend(true, obj, makeObjValue(field.split("\."), name.getValue()));
-       		    }
-       		}
-       	});
+        window.jQuery("select.comparison:has(option[value!='dontcare']:selected)").each(function(index, elem){
+            obj[elem.dataset.schemapath] = { method: elem.options[elem.selectedIndex].value };
+            var editor = self.getEditor(elem.dataset.schemapath);
+            if( !! editor ){
+                obj[elem.dataset.schemapath].value = editor.getValue();
+            }
+        });
     } else {
-    	obj = this.getValue();
+        obj = {};
+        obj[this.varname] = this.getValue();
     }
-    var rc = {};
-    rc[this.varname] = obj;
-    return rc;
+
+    return obj;
   },
   highlightDiff: function(diff){
+    var self = this;
     if( diff ){
-       $("div[data-schemapath]").attr("style", "color:initial");
-       for( var i in diff ){
-         var d = diff[i];
-         if($("div[data-schemapath='"+d.replace(d.split(".")[0], 'root')+"'] h3")[0]){
-             $("div[data-schemapath='"+d.replace(d.split(".")[0], 'root')+"'] h3").attr('style', 'color:red');
-         } else {
-             $("div[data-schemapath='"+d.replace(d.split(".")[0], 'root')+"']").attr("style", "color:red");
-         }
-         $("td[data-schemapath='"+d.replace(d.split(".")[0], 'root').replace(/\[/g, '.').replace(/\]/g,'')+"'] div ").addClass('has-error');
-         $("td[data-schemapath='"+d.replace(d.split(".")[0], 'root').replace(/\[/g, '.').replace(/\]/g,'')+"'] div .form-control").css('border-color', 'red');
-       }
+        window.jQuery.each(diff, function(index, path){
+            var editor = self.getEditor(path);
+            if( !! editor ){
+                var elem = (!! editor.control) ? editor.control : editor.container;
+                elem.classList.add("has-error");
+            }
+        });
     }
   },
     validate: function(value) {

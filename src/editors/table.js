@@ -74,20 +74,20 @@ JSONEditor.defaults.editors.table = JSONEditor.defaults.editors.array.extend({
       var ce = tmp.getChildEditors();
       var order = tmp.property_order || Object.keys(ce);
       for(var i=0; i<order.length; i++) {
-        var th = self.theme.getTableHeaderCell(ce[order[i]].getTitle());
+        var th = self.theme.getTableHeaderCell(self, ce[order[i]], ce[order[i]].getTitle());
         if(ce[order[i]].options.hidden) th.style.display = 'none';
         self.header_row.appendChild(th);
       }
     }
     else {
-      self.header_row.appendChild(self.theme.getTableHeaderCell(this.item_title));
+      self.header_row.appendChild(self.theme.getTableHeaderCell(self, null, this.item_title));
     }
 
     tmp.destroy();
     this.row_holder.innerHTML = '';
 
     // Row Controls column
-    this.controls_header_cell = self.theme.getTableHeaderCell(" ");
+    this.controls_header_cell = self.theme.getTableHeaderCell(self, null, " ");
     self.header_row.appendChild(this.controls_header_cell);
 
     // Add controls

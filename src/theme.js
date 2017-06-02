@@ -235,7 +235,7 @@ JSONEditor.AbstractTheme = Class.extend({
   getTableBody: function() {
     return document.createElement('tbody');
   },
-  getTableHeaderCell: function(text) {
+  getTableHeaderCell: function(editor, column_editor, text) {
     var el = document.createElement('th');
     el.style = el.style || {};
     if(text != ' '){
