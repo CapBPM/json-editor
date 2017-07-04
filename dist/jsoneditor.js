@@ -313,8 +313,16 @@ JSONEditor.prototype = {
   setValues: function(obj){
     var self = this;
     if( this.options.selectable_fields ){
-        window.jQuery.each(obj, function(key, val){
+        var keys = [];
+        window.jQuery.each(obj, function(key){
+            keys.push(key);
+        });
+
+        keys.sort();
+
+        window.jQuery.each(keys, function(ind, key){
             var editor = self.getEditor(key);
+            var val = obj[key];
             if( !! editor ){
                 editor.setValue(val.value);
                 var select = window.jQuery('select.comparison[data-schemapath="'+key+'"]')[0];
