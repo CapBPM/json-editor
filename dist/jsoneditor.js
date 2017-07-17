@@ -6745,6 +6745,12 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
     btn = btn.replace('{text}',text);
     btn = btn.replace('{text}',text);
     el.innerHTML += btn;
+
+    var enumerationBtn = '<button class="btn btn-xs btn-add-enums pull-right" name="{text}" style="margin-left: 5px"> <i name="{text}" class="fa fa-pencil-square-o fa-lg"></i> </button>';
+    enumerationBtn = enumerationBtn.replace('{text}',text);
+    enumerationBtn = enumerationBtn.replace('{text}',text);
+    el.innerHTML += enumerationBtn;
+
     el.className +=' clearfix';
     el.style.width = '100%';
     return el;
@@ -6854,6 +6860,12 @@ JSONEditor.defaults.themes.bootstrap3_s = JSONEditor.defaults.themes.bootstrap3.
     btn = btn.replace('{text}',text);
     btn = btn.replace('{text}',text);
     el.innerHTML += btn;
+
+    var enumerationBtn = '<button class="btn btn-xs btn-add-enums pull-right" name="{text}" style="margin-left: 5px"> <i name="{text}" class="fa fa-pencil-square-o fa-lg"></i> </button>';
+    enumerationBtn = enumerationBtn.replace('{text}',text);
+    enumerationBtn = enumerationBtn.replace('{text}',text);
+    el.innerHTML += enumerationBtn;
+
     el.className +=' clearfix';
     el.style.width = '100%';
     return el;
